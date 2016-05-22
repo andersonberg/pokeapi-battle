@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>React Tutorial</title>
+    <link rel="stylesheet" href="css/base.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.1/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.1/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.16/browser.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.5/marked.min.js"></script>
+  </head>
+  <body>
+    <div id="content"></div>
+    <script type="text/babel">
+      var Pokemon = React.createClass({
+        getInitialState: function() {
+          return {
+            pokename: '',
+            pokexp: ''
+          };
+        },
+
+        componentDidMount: function() {
+          this.serverRequest = $.get(this.props.source, function (result) {
+            var pokemon = result;
+            this.setState({
+              pokename: pokemon.name,
+              pokexp: pokemon.base_experience
+            });
+          }.bind(this));
+        },
+
+        componentWillUnmount: function() {
+          this.serverRequest.abort();
+        },
+
+        render: function() {
+          return (
+            <div>
+              <p>Name: {this.state.pokename}</p>
+              <p>Experience: {this.state.pokexp}</p>
+            </div>
+          );
+        }
+      });
+
+      ReactDOM.render(
+        <Pokemon source="http://pokeapi.co/api/v2/pokemon/1/" />,
+        document.getElementById('content')
+      );
+    </script>
+  </body>
+</html>
